@@ -1,1 +1,5 @@
-# Programming-Applications-in-Economics-Project
+# EconomicsProject
+## Technologies and Libraries
+* Python
+
+## Setup:
