@@ -93,14 +93,13 @@ Get_Px Get 1 parm Age = current  Age
 def Get_Px(Age):
     px= Qxm_list[Age-18]
     return px
-
 """
 tPx: represents the probability that a person aged exactly x lives for another t years to exact age (x+t).
 (The probability of surviving t years)
 Get_tPx Get 1 parm Age = current  Age
 """
 def Get_tPx(Age):
-    print("Enter age t (number of years an individual is expected to live:)")
+    print("Enter age t (number of years an individual is expected to live):")
     Age2 = int(input())
     tPx = Get_Lx((Age+Age2)) / Get_Lx(Age)
     return tPx
@@ -122,10 +121,10 @@ probability to lives for another t years * probability to lives for another s ye
 Get_stPx Get 1 parm Age = current  Age
 """
 def Get_stPx(Age):
-    print("Enter age t (number of years an individual is expected to live:)")
+    print("Enter age t (number of years an individual is expected to live):")
     Age2 = int(input())
     tPx = Get_Lx((Age + Age2)) / Get_Lx(Age)
-    print("Enter age s (number of years an individual is expected to live after t years:)")
+    print("Enter age s (number of years an individual is expected to live after t years):")
     Age3 = int(input())
     Age4=Age+Age2
     s_P_tx = Get_Lx((Age4 + Age3)) / Get_Lx(Age4)
@@ -138,8 +137,9 @@ def Get_stPx(Age):
 Get_n1Qx Get 1 parm Age = current  Age
 """
 def Get_n1Qx(Age):
-    print("Enter Parameter n (number of years a person is expected to live:)")
+    print("Enter Parameter n (number of years a person is expected to live):")
     Age2 = int(input())
     nPx =  Get_Lx((Age + Age2)) / Get_Lx(Age)
     n1_Q_x = nPx * Get_Qx(Age+Age2+1)
     return n1_Q_x
+

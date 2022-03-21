@@ -1,6 +1,9 @@
 import Mortality_Table_Men
 import pandas as pd
 import datetime
+from datetime import datetime
+from  datetime import date
+
 # excel_file = 'data.xlsx'
 # Date = pd.read_excel(excel_file)
 
@@ -34,7 +37,7 @@ def Get_All_Data(string):
     Leaving_Reason = []
     excel_file = string
     Date = pd.read_excel(excel_file)
-    for i in range(1,len(Date)-149):
+    for i in range(1,len(Date)-145):
         First_Name.append(read_value_from_excel(excel_file,'B',i+2))
         Last_Name.append(read_value_from_excel(excel_file,'C',i+2))
         Gender.append(read_value_from_excel(excel_file,'D',i+2))
@@ -60,9 +63,22 @@ for i in range(len(My_Data[0])):
     for j in range(len(My_Data)):
         temp_list.append(My_Data[j][i])
     My_Data_New.append(temp_list)
-for el in My_Data_New:
-    print(el)
 
+def Get_Age_By_Days(Age):
+    b_date = Age
+    b_date = datetime(b_date.year, b_date.month, b_date.day)
+    print(type(b_date))
+    date2 = datetime(2020,12,31)
+    return (date2-b_date).days
+
+def Get_Senioruty_By_Years(start,end):
+    a_date = start
+    a_date = datetime(a_date.year, a_date.month, a_date.day)
+    b_date = end
+    if type(end) != type(start):
+        return "The employee has not yet been fired"
+    b_date = datetime(b_date.year, b_date.month, b_date.day)
+    return ((b_date-a_date)/365.25).days
 """
 The probability that a person at age X will leave his job after t years.
 Get_Chance_To_Leave Get 1 parm Age = current  Age
