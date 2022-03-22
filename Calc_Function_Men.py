@@ -1,3 +1,5 @@
+import csv
+
 import Mortality_Table_Men
 import pandas as pd
 import datetime
@@ -17,7 +19,10 @@ def read_value_from_excel(filename, column, row):
 Enter the values from the Excel data file into the lists
 """
 
-def Get_All_Data(string):
+def Get_All_Data(file_name):
+    filename = open(file_name, 'r', encoding="utf8")
+    # creating dictreader object
+    file = csv.DictReader(filename)
     """
     Lists that save the value from the Excel date file
     """
@@ -35,34 +40,50 @@ def Get_All_Data(string):
     Paid_From_Property = []
     Completion_Payment_Chuck = []
     Leaving_Reason = []
-    excel_file = string
-    Date = pd.read_excel(excel_file)
-    for i in range(1,len(Date)-145):
-        First_Name.append(read_value_from_excel(excel_file,'B',i+2))
-        Last_Name.append(read_value_from_excel(excel_file,'C',i+2))
-        Gender.append(read_value_from_excel(excel_file,'D',i+2))
-        Birth_Date.append(read_value_from_excel(excel_file,'E',i+2))
-        Start_Work.append(read_value_from_excel(excel_file,'F',i+2))
-        Salary.append(read_value_from_excel(excel_file,'G',i+2))
-        Start_Date_Section_14.append(read_value_from_excel(excel_file,'H',i+2))
-        Percent_Section_14.append(read_value_from_excel(excel_file,'I',i+2))
-        Property_Value.append(read_value_from_excel(excel_file,'J',i+2))
-        Deposits.append(read_value_from_excel(excel_file,'K',i+2))
-        Departure_Date.append(read_value_from_excel(excel_file,'L',i+2))
-        Paid_From_Property.append(read_value_from_excel(excel_file,'M',i+2))
-        Completion_Payment_Chuck.append(read_value_from_excel(excel_file,'N',i+2))
-        Leaving_Reason.append(read_value_from_excel(excel_file,'O',i+2))
+    for col in file:
+        First_Name.append(col['Unnamed: 1'])
+        Last_Name.append(col['Unnamed: 2'])
+        Gender.append(col['Unnamed: 3'])
+        Birth_Date.append(col['Unnamed: 4'])
+        Start_Work.append(col['Unnamed: 5'])
+        Salary.append(col['Unnamed: 6'])
+        Start_Date_Section_14.append(col['Unnamed: 7'])
+        Percent_Section_14.append(col['Unnamed: 8'])
+        Property_Value.append(col['Unnamed: 9'])
+        Deposits.append(col['Unnamed: 10'])
+        Departure_Date.append(col['Unnamed: 11'])
+        Paid_From_Property.append(col['Unnamed: 12'])
+        Completion_Payment_Chuck.append(col['Unnamed: 13'])
+        Leaving_Reason.append(col['Unnamed: 14'])
+
+    # for i in range(1,len(Date)):
+    #     First_Name.append(read_value_from_excel(excel_file,'B',i+2))
+    #     Last_Name.append(read_value_from_excel(excel_file,'C',i+2))
+    #     Gender.append(read_value_from_excel(excel_file,'D',i+2))
+    #     Birth_Date.append(read_value_from_excel(excel_file,'E',i+2))
+    #     Start_Work.append(read_value_from_excel(excel_file,'F',i+2))
+    #     Salary.append(read_value_from_excel(excel_file,'G',i+2))
+    #     Start_Date_Section_14.append(read_value_from_excel(excel_file,'H',i+2))
+    #     Percent_Section_14.append(read_value_from_excel(excel_file,'I',i+2))
+    #     Property_Value.append(read_value_from_excel(excel_file,'J',i+2))
+    #     Deposits.append(read_value_from_excel(excel_file,'K',i+2))
+    #     Departure_Date.append(read_value_from_excel(excel_file,'L',i+2))
+    #     Paid_From_Property.append(read_value_from_excel(excel_file,'M',i+2))
+    #     Completion_Payment_Chuck.append(read_value_from_excel(excel_file,'N',i+2))
+    #     Leaving_Reason.append(read_value_from_excel(excel_file,'O',i+2))
     return First_Name, Last_Name, Gender,Birth_Date, Start_Work, \
             Salary, Start_Date_Section_14, Percent_Section_14, Property_Value,\
             Deposits, Departure_Date, Paid_From_Property, Completion_Payment_Chuck, Leaving_Reason
 
 My_Data_New=[]
-My_Data=Get_All_Data('data.xlsx')
-for i in range(len(My_Data[0])):
-    temp_list=[]
-    for j in range(len(My_Data)):
-        temp_list.append(My_Data[j][i])
-    My_Data_New.append(temp_list)
+My_Data=Get_All_Data('data_csv.csv')
+
+
+# for i in range(len(My_Data[0])):
+#     temp_list=[]
+#     for j in range(len(My_Data)):
+#         temp_list.append(My_Data[j][i])
+#     My_Data_New.append(temp_list)
 
 def Get_Age_By_Days(Age):
     b_date = Age

@@ -1,5 +1,31 @@
+import csv
 import pandas as pd
-import openpyxl
+
+"""
+convert excel to csv
+input: path to xlsx file (string)
+output: csv file with a name we choose
+"""
+def To_CSV(path):
+    read_file = pd.read_excel(r''+path)
+    print("enter file name: ")
+    name = input()
+    read_file.to_csv(r'C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\'+name+'.csv',
+                     index=False, header=True)
+
+"""
+convert csv to excel
+input: path to csv file (string)
+output: excel file with a name we choose
+"""
+def To_XL(path):
+    read_file = pd.read_csv(r''+path)
+    print("enter file name: ")
+    name = input()
+    read_file.to_excel(r'C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\'+name+'.xlsx',
+                     index=None, header=True)
+
+
 """
 A dictionary that keep the probability to be fired 
 or to resign from your work
@@ -36,44 +62,52 @@ Read a single cell value from an Excel file
 def read_value_from_excel(filename, column, row):
     return pd.read_excel(filename, skiprows=row - 1, usecols=column, nrows=1, header=None, names=["Value"]).iloc[0]["Value"]
 
+#To_CSV('C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\life_table.xlsx')
+csv_file = 'life_table_men.csv'
+life_table = pd.read_csv(csv_file)
 
-excel_file = 'life_table.xlsx'
-life_table = pd.read_excel(excel_file)
 
-"""
-Lists that save the value of Lx Dx Px Qx from the Excel life table - for men
-"""
-AGEm_list=[]
-Lxm_list=[]
-Dxm_list=[]
-Pxm_list=[]
-Qxm_list=[]
 
-"""
-Enter the values from the Excel life table file into the lists
-"""
-for i in range(1,len(life_table)):
-    AGEm_list.append(read_value_from_excel(excel_file,'B',i+2))
-    Lxm_list.append(read_value_from_excel(excel_file,'C',i+2))
-    Dxm_list.append(read_value_from_excel(excel_file,'D',i+2))
-    Pxm_list.append(read_value_from_excel(excel_file,'E',i+2))
-    Qxm_list.append(read_value_from_excel(excel_file,'F',i+2))
 
+def Get_Value_From_Csv(file_name):
+    filename = open(file_name, 'r')
+    # creating dictreader object
+    file = csv.DictReader(filename)
+
+    AGEm_list=[]
+    Lxm_list=[]
+    Dxm_list=[]
+    Pxm_list=[]
+    Qxm_list=[]
+
+    """
+     iterating over each row and append
+     values to empty list
+    """
+    for col in file:
+        AGEm_list.append(col['Unnamed: 1'])
+        Lxm_list.append(col['Unnamed: 2'])
+        Dxm_list.append(col['Unnamed: 3'])
+        Pxm_list.append(col['Unnamed: 4'])
+        Qxm_list.append(col['Unnamed: 5'])
+
+    return AGEm_list, Lxm_list, Dxm_list, Pxm_list, Qxm_list
+
+new_list=Get_Value_From_Csv('life_table_men.csv')
 
 """
 lx: represents the number of persons alive aged x in a life table.
 Get_Lx Get 1 parm Age = current  Age
 """
 def Get_Lx(Age):
-    lx= Lxm_list[Age-18]
+    lx= new_list[1][Age-17]
     return lx
-
 """
 dx: represents the number of persons who die aged x last birthday. dx=lx-lx+1
 Get_Dx Get 1 parm Age = current  Age
 """
 def Get_Dx(Age):
-    dx = Dxm_list[Age - 18]
+    dx = new_list[2][Age - 17]
     return dx
 
 """
@@ -82,7 +116,7 @@ the probability of dying in the next year
 Get_Qx Get 1 parm Age = current  Age
 """
 def Get_Qx(Age):
-    qx= Qxm_list[Age-18]
+    qx= new_list[1][Age-17]
     return qx
 
 """
@@ -91,7 +125,7 @@ px: px represents the probability that a person aged exactly x survives one year
 Get_Px Get 1 parm Age = current  Age
 """
 def Get_Px(Age):
-    px= Qxm_list[Age-18]
+    px= new_list[1][Age-17]
     return px
 """
 tPx: represents the probability that a person aged exactly x lives for another t years to exact age (x+t).
@@ -142,4 +176,3 @@ def Get_n1Qx(Age):
     nPx =  Get_Lx((Age + Age2)) / Get_Lx(Age)
     n1_Q_x = nPx * Get_Qx(Age+Age2+1)
     return n1_Q_x
-

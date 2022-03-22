@@ -1,3 +1,4 @@
+import csv
 import pandas as pd
 
 """
@@ -42,39 +43,36 @@ Open the Excel file and read from it
 excel_file = 'life_table.xlsx'
 life_table = pd.read_excel(excel_file)
 
-"""
-Lists that save the value of Lx Dx Px Qx from the Excel life table - for women
-"""
-AGEw_list=[]
-Lxw_list=[]
-Dxw_list=[]
-Pxw_list=[]
-Qxw_list=[]
+def Get_Value_From_Csv(file_name):
+    filename = open(file_name, 'r')
+    # creating dictreader object
+    file = csv.DictReader(filename)
 
-"""
-Enter the values from the Excel life table file into the lists
-"""
-for i in range(1,len(life_table)):
-    AGEw_list.append(read_value_from_excel(excel_file,'B',i+2))
-    Lxw_list.append(read_value_from_excel(excel_file,'C',i+2))
-    Dxw_list.append(read_value_from_excel(excel_file,'D',i+2))
-    Pxw_list.append(read_value_from_excel(excel_file,'E',i+2))
-    Qxw_list.append(read_value_from_excel(excel_file,'F',i+2))
+    AGEm_list=[]
+    Lxm_list=[]
+    Dxm_list=[]
+    Pxm_list=[]
+    Qxm_list=[]
+
+    # To_CSV('C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\life_table.xlsx')
+
+    return AGEm_list, Lxm_list, Dxm_list, Pxm_list, Qxm_list
+
+new_list=Get_Value_From_Csv('life_table_women.csv')
 
 """
 lx: represents the number of persons alive aged x in a life table.
 Get_Lx Get 1 parm Age = current  Age
 """
 def Get_Lx(Age):
-    lx= Lxw_list[Age-18]
+    lx= new_list[1][Age-17]
     return lx
-
 """
 dx: represents the number of persons who die aged x last birthday. dx=lx-lx+1
 Get_Dx Get 1 parm Age = current  Age
 """
 def Get_Dx(Age):
-    dx = Dxw_list[Age - 18]
+    dx = new_list[2][Age - 17]
     return dx
 
 """
@@ -83,7 +81,7 @@ the probability of dying in the next year
 Get_Qx Get 1 parm Age = current  Age
 """
 def Get_Qx(Age):
-    qx= Qxw_list[Age-18]
+    qx= new_list[1][Age-17]
     return qx
 
 """
@@ -92,7 +90,7 @@ px: px represents the probability that a person aged exactly x survives one year
 Get_Px Get 1 parm Age = current  Age
 """
 def Get_Px(Age):
-    px= Qxw_list[Age-18]
+    px= new_list[1][Age-17]
     return px
 
 """
