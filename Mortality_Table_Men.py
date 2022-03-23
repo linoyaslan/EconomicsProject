@@ -12,6 +12,7 @@ def To_CSV(path):
     name = input()
     read_file.to_csv(r'C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\'+name+'.csv',
                      index=False, header=True)
+    return name
 
 """
 convert csv to excel
@@ -102,6 +103,7 @@ Get_Lx Get 1 parm Age = current  Age
 def Get_Lx(Age):
     lx= new_list[1][Age-17]
     return lx
+
 """
 dx: represents the number of persons who die aged x last birthday. dx=lx-lx+1
 Get_Dx Get 1 parm Age = current  Age
@@ -127,6 +129,7 @@ Get_Px Get 1 parm Age = current  Age
 def Get_Px(Age):
     px= new_list[1][Age-17]
     return px
+
 """
 tPx: represents the probability that a person aged exactly x lives for another t years to exact age (x+t).
 (The probability of surviving t years)
@@ -176,3 +179,4 @@ def Get_n1Qx(Age):
     nPx =  Get_Lx((Age + Age2)) / Get_Lx(Age)
     n1_Q_x = nPx * Get_Qx(Age+Age2+1)
     return n1_Q_x
+

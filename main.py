@@ -1,5 +1,8 @@
 import Mortality_Table_Women
 import Mortality_Table_Men
+import Calc_Function_Men
+import maya
+
 """
 Compound Interest Calculator (FV)
 """
@@ -78,6 +81,27 @@ def Present_Value():
         PV += New_Amount / (1 + Interest / 100)**(i+1)
     print("The amount you borrow is: ")
     return PV
+
+
+
+def Main_Func(File_name):
+    New_file_name = Mortality_Table_Men.To_CSV(File_name)
+    new_list = Calc_Function_Men.Create_Data_List(New_file_name)
+    x=Calc_Function_Men.Get_Senioruty_By_Years(Calc_Function_Men.Get_Start_Date('מאיר',"טרבלסי",new_list),
+                                               Calc_Function_Men.Get_leaving_Date('מאיר',"טרבלסי",new_list))
+    print(Calc_Function_Men.Get_Salary('מאיר',"טרבלסי",new_list))
+    print(x)
+
+
+Main_Func("data.xlsx")
+
+
+
+
+
+
+
+
 
 
 
