@@ -82,18 +82,58 @@ def Present_Value():
     print("The amount you borrow is: ")
     return PV
 
+#for i in range(1,Calc_Function_Men.Get_Senioruty_By_Years('22/01/2000','25/01/2020')):
+
+
 
 
 def Main_Func(File_name):
+
     New_file_name = Mortality_Table_Men.To_CSV(File_name)
-    new_list = Calc_Function_Men.Create_Data_List(New_file_name)
-    x=Calc_Function_Men.Get_Senioruty_By_Years(Calc_Function_Men.Get_Start_Date('מאיר',"טרבלסי",new_list),
-                                               Calc_Function_Men.Get_leaving_Date('מאיר',"טרבלסי",new_list))
-    print(Calc_Function_Men.Get_Salary('מאיר',"טרבלסי",new_list))
-    print(x)
+    New_file_name2 = Mortality_Table_Men.To_CSV(File_name)
+    new_list1 = Calc_Function_Men.Create_Data_List(New_file_name)
+    new_list2 = Calc_Function_Men.Create_Data_List2(New_file_name2)
+    x=Calc_Function_Men.Get_Senioruty_By_Years(Calc_Function_Men.Get_Start_Date('מאיר',"טרבלסי",new_list1),
+                                                Calc_Function_Men.Get_leaving_Date('מאיר',"טרבלסי",new_list1))
+    for item in new_list1:
+        First_Name =item[0]
+        Last_Name =item[1]
+        Gender =item[2]
+        Birth_Date =item[3]
+        Start_Work =item[4]
+        Salary = item[5]
+        Start_Date_Section_14 =item[6]
+        Percent_Section_14 =item[7]
+        Property_Value =item[8]
+        Deposits =item[9]
+        Departure_Date =item[10]
+        Paid_From_Property =item[11]
+        Completion_Payment_Chuck =item[12]
+        Leaving_Reason =item[13]
+        Senioruty=Calc_Function_Men.Get_Senioruty_By_Years(Calc_Function_Men.Get_Start_Date(First_Name, Last_Name, new_list1),
+                                                 Calc_Function_Men.Get_leaving_Date(First_Name, Last_Name, new_list1))
+        Age=Calc_Function_Men.Get_Age_By_Days(Birth_Date)//365
+        sum=0
+        t=0
+        S_G_Rate=Calc_Function_Men.Get_Salary_Growth_Rate()
+        if Start_Date_Section_14 != None:
+            No_SDS14=Senioruty-Calc_Function_Men.Get_Section_14_By_Years\
+                (Start_Work, Start_Date_Section_14)
+        if Senioruty != type(int):
+            continue
+        for i in range(1,Age):
+            if i<No_SDS14:
+                sum1=Salary * Senioruty*((1+S_G_Rate)**(t+0.5))*\
+                    (Mortality_Table_Men.Get_tPx(Age))*\
+                    (Mortality_Table_Men.Get_Qx(Age))
+            else:
+                sum2 = Salary * Senioruty * ((1 + S_G_Rate) ** (t + 0.5)) * \
+                       (Mortality_Table_Men.Get_tPx(Age)) * \
+                       (Mortality_Table_Men.Get_Qx(Age))
 
 
-Main_Func("data.xlsx")
+
+Main_Func("data5")
 
 
 

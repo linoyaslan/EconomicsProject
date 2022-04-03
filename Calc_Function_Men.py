@@ -6,9 +6,6 @@ import datetime
 from datetime import datetime
 from datetime import date
 
-def read_value_from_excel(filename, column, row):
-    return pd.read_excel(filename,sheet_name='data', skiprows=row - 1, usecols=column, nrows=1, header=None, names=["Value"]).iloc[0]["Value"]
-
 
 """
 input: csv file name (string)
@@ -71,6 +68,19 @@ def Get_All_Data(file_name):
             Salary, Start_Date_Section_14, Percent_Section_14, Property_Value,\
             Deposits, Departure_Date, Paid_From_Property, Completion_Payment_Chuck, Leaving_Reason
 
+def Get_All_Data2(file_name):
+    filename = open(file_name+'.csv', 'r', encoding="utf8")
+    # creating dictreader object
+    file = csv.DictReader(filename)
+    """
+    Lists that save the value from the csv date file
+    """
+    Year = []
+    Discounting = []
+    for col in file:
+        Year.append(col['Unnamed: 0'])
+        Discounting.append(col['Unnamed: 1'])
+    return Year, Discounting
 
 """
 The function gets a file name, and returns a list that contains lists of data from the csv file.
@@ -86,6 +96,19 @@ def Create_Data_List(File_name):
             temp_list.append(My_Data[j][i])
         my_new_data.append(temp_list)
     return my_new_data
+#Mortality_Table_Men.To_CSV('data5')
+#x=Create_Data_List('data5_csv')
+
+def Create_Data_List2(File_name):
+    My_Data=Get_All_Data2(File_name)
+    my_new_data=[]
+    for i in range(1,len(My_Data[0])):
+        temp_list=[]
+        for j in range(len(My_Data)):
+            temp_list.append(My_Data[j][i])
+        my_new_data.append(temp_list)
+    return my_new_data
+
 
 def Get_Age_By_Days(Age):
     b_date = Age
@@ -123,7 +146,6 @@ def Get_leaving_Date(Name,last_name,Data_list):
                 return 0
             return maya.parse(Data_list[i][10]).datetime()
 
-
 """
 Calculates the seniority of an employee by days
 """
@@ -136,18 +158,27 @@ def Get_Senioruty_By_Years(start,end):
     b_date = datetime(b_date.year, b_date.month, b_date.day)
     return ((b_date-a_date)/365.25).days
 
+def Get_Section_14_By_Years(start,end):
+    a_date = start
+    a_date = datetime(a_date.year, a_date.month, a_date.day)
+    b_date = end
+    if type(end) != type(start):
+        return "There is no section 14"
+    b_date = datetime(b_date.year, b_date.month, b_date.day)
+    return ((b_date-a_date)/365.25).days
+
 def Get_Salary(Name,last_name,Data_list):
     for i in range(len(Data_list)):
         if Data_list[i][0] == Name and Data_list[i][1] == last_name:
             return Data_list[i][5]
 
+def Get_Discounting(Year,Data_list):
+    for i in range(len(Data_list)):
+        if Data_list[i][0] == str(Year):
+            return Data_list[i][1]
 
-
-
-
-
-
-
+def Get_Salary_Growth_Rate():
+    return 0.04
 
 def Get_All_Data_XL(file_name):
     excel_file = file_name
@@ -187,3 +218,5 @@ def Get_All_Data_XL(file_name):
             Salary, Start_Date_Section_14, Percent_Section_14, Property_Value,\
             Deposits, Departure_Date, Paid_From_Property, Completion_Payment_Chuck, Leaving_Reason
 
+def read_value_from_excel(filename, column, row):
+    return pd.read_excel(filename,sheet_name='data', skiprows=row - 1, usecols=column, nrows=1, header=None, names=["Value"]).iloc[0]["Value"]

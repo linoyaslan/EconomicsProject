@@ -7,9 +7,11 @@ input: path to xlsx file (string)
 output: csv file with a name we choose
 """
 def To_CSV(path):
-    read_file = pd.read_excel(r''+path)
     print("enter file name: ")
     name = input()
+    print("enter sheets name")
+    sheet_name=input()
+    read_file = pd.read_excel(r'C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\'+path+'.xlsx', sheet_name=sheet_name)
     read_file.to_csv(r'C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\'+name+'.csv',
                      index=False, header=True)
     return name
