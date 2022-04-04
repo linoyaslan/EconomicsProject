@@ -29,13 +29,11 @@ for i in range(18,110):
         Resigns_dict[i] = 0.07
     elif i<110:
         Resigns_dict[i] = 0.03
-
 """
 Read a single cell value from an Excel file
 """
 def read_value_from_excel(filename, column, row):
     return pd.read_excel(filename, sheet_name='נשים', skiprows=row - 1, usecols=column, nrows=1, header=None, names=["Value"]).iloc[0]["Value"]
-
 
 """
 Open the Excel file and read from it
@@ -53,9 +51,7 @@ def Get_Value_From_Csv(file_name):
     Dxm_list=[]
     Pxm_list=[]
     Qxm_list=[]
-
     # To_CSV('C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\life_table.xlsx')
-
     return AGEm_list, Lxm_list, Dxm_list, Pxm_list, Qxm_list
 
 new_list=Get_Value_From_Csv('life_table_women.csv')
@@ -147,10 +143,8 @@ def Get_n1Qx(Age):
 The probability that a person at age X will leave his job after t years.
 Get_Chance_To_Leave Get 1 parm Age = current  Age
 """
-def Get_Chance_To_Leave(Age):
-    print("Enter y (The number of years a person is expected to leave his workplace:)")
-    Age2 = int(input())
+def Get_Chance_To_Leave(Age,i):
     result = 1.0
-    for i in range(Age+1,(Age+Age2)):
-        result = result*(1-(Fired_dict[i] + Resigns_dict[i] + Get_Qx(i)))
+    for j in range(Age+1,(Age+i)):
+        result = result*(1-(Fired_dict[j] + Resigns_dict[j] + Get_Qx(j)))
     return result

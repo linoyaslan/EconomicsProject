@@ -1,10 +1,11 @@
 import csv
-import maya
 import Mortality_Table_Men
 import pandas as pd
 import datetime
 from datetime import datetime
 from datetime import date
+from dateutil.parser import parse
+
 
 
 """
@@ -96,8 +97,6 @@ def Create_Data_List(File_name):
             temp_list.append(My_Data[j][i])
         my_new_data.append(temp_list)
     return my_new_data
-#Mortality_Table_Men.To_CSV('data5')
-#x=Create_Data_List('data5_csv')
 
 def Create_Data_List2(File_name):
     My_Data=Get_All_Data2(File_name)
@@ -111,22 +110,22 @@ def Create_Data_List2(File_name):
 
 
 def Get_Age_By_Days(Age):
-    b_date = Age
-    b_date = datetime(b_date.year, b_date.month, b_date.day)
-    date2 = datetime(2021,12,31)
+    temp1 = parse(Age)
+    b_date = datetime(temp1.year, temp1.month, temp1.day)
+    temp2=parse('2021-12-31')
+    date2 = datetime(temp2.year, temp2.month, temp2.day)
     return (date2-b_date).days
 
 """
 The probability that a person at age X will leave his job after t years.
 Get_Chance_To_Leave Get 1 parm Age = current  Age
 """
-def Get_Chance_To_Leave(Age):
-    print("Enter y (The number of years a person is expected to leave his workplace:)")
-    Age2 = int(input())
+def Get_Chance_To_Leave(Age,i):
+    #print("Enter y (The number of years a person is expected to leave his workplace:)")
     result = 1.0
-    for i in range(Age+1,(Age+Age2)):
-        result = result*(1-(Mortality_Table_Men.Fired_dict[i] + Mortality_Table_Men.Resigns_dict[i]
-                            + Mortality_Table_Men.Get_Qx(i)))
+    for j in range(Age+1,(Age+i)):
+        result = result*(1-(Mortality_Table_Men.Fired_dict[j] + Mortality_Table_Men.Resigns_dict[j]
+                            + Mortality_Table_Men.Get_Qx(j)))
     return result
 
 
@@ -135,38 +134,40 @@ Get start date of work
 """
 def Get_Start_Date(Name,last_name,Data_list):
     for i in range(len(Data_list)):
-        if  Data_list[i][0] == Name and Data_list[i][1] ==last_name:
-            return maya.parse(Data_list[i][4]).datetime()
-
+        if Data_list[i][0] == Name and Data_list[i][1] == last_name:
+            return parse(Data_list[i][4])
 
 def Get_leaving_Date(Name,last_name,Data_list):
     for i in range(len(Data_list)):
         if  Data_list[i][0] == Name and Data_list[i][1] == last_name:
             if Data_list[i][10] =='-':
                 return 0
-            return maya.parse(Data_list[i][10]).datetime()
+            return parse(Data_list[i][10])
 
 """
 Calculates the seniority of an employee by days
 """
-def Get_Senioruty_By_Years(start,end):
+def Get_Senioruty_By_Years(start):
     a_date = start
     a_date = datetime(a_date.year, a_date.month, a_date.day)
-    b_date = end
-    if type(end) != type(start):
-        return "The employee has not yet been fired"
+    b_date = parse('28/04/2022')
     b_date = datetime(b_date.year, b_date.month, b_date.day)
     return ((b_date-a_date)/365.25).days
-
+"""
+Returns the years in which an employee worked without section 14
+"""
 def Get_Section_14_By_Years(start,end):
-    a_date = start
+    a_date = parse(start)
     a_date = datetime(a_date.year, a_date.month, a_date.day)
-    b_date = end
+    b_date = parse(end)
     if type(end) != type(start):
         return "There is no section 14"
     b_date = datetime(b_date.year, b_date.month, b_date.day)
     return ((b_date-a_date)/365.25).days
 
+"""
+Returns the salary of each employee based on input: first, last name, Data_list
+"""
 def Get_Salary(Name,last_name,Data_list):
     for i in range(len(Data_list)):
         if Data_list[i][0] == Name and Data_list[i][1] == last_name:
@@ -175,7 +176,7 @@ def Get_Salary(Name,last_name,Data_list):
 def Get_Discounting(Year,Data_list):
     for i in range(len(Data_list)):
         if Data_list[i][0] == str(Year):
-            return Data_list[i][1]
+            return float(Data_list[i][1])
 
 def Get_Salary_Growth_Rate():
     return 0.04

@@ -28,7 +28,6 @@ def To_XL(path):
     read_file.to_excel(r'C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\'+name+'.xlsx',
                      index=None, header=True)
 
-
 """
 A dictionary that keep the probability to be fired 
 or to resign from your work
@@ -68,8 +67,6 @@ def read_value_from_excel(filename, column, row):
 #To_CSV('C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\life_table.xlsx')
 csv_file = 'life_table_men.csv'
 life_table = pd.read_csv(csv_file)
-
-
 
 
 def Get_Value_From_Csv(file_name):
@@ -137,10 +134,9 @@ tPx: represents the probability that a person aged exactly x lives for another t
 (The probability of surviving t years)
 Get_tPx Get 1 parm Age = current  Age
 """
-def Get_tPx(Age):
-    print("Enter age t (number of years an individual is expected to live):")
-    Age2 = int(input())
-    tPx = Get_Lx((Age+Age2)) / Get_Lx(Age)
+def Get_tPx(Age,i):
+    Age2 = i
+    tPx = float(Get_Lx((Age+Age2))) / float(Get_Lx(Age))
     return tPx
 
 """
@@ -148,9 +144,8 @@ tqx: represents the probability that a person aged exactly x dies before exact a
 (The probability of dying within t years)
 Get_tQx Get 1 parm Age = current  Age
 """
-def Get_tQx(Age):
-    #tqx = ( lx - l(x+t) ) / lx
-    tQx = 1 - Get_tPx(Age)
+def Get_tQx(Age,i):
+    tQx = 1 - Get_tPx(Age,i)
     return tQx
 
 """
