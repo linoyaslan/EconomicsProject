@@ -123,11 +123,12 @@ Get_Chance_To_Leave Get 1 parm Age = current  Age
 def Get_Chance_To_Leave(Age,i):
     #print("Enter y (The number of years a person is expected to leave his workplace:)")
     result = 1.0
+    if i == 0:
+        return 1
     for j in range(Age+1,(Age+i)):
         result = result*(1-(Mortality_Table_Men.Fired_dict[j] + Mortality_Table_Men.Resigns_dict[j]
-                            + Mortality_Table_Men.Get_Qx(j)))
+                            + float(Mortality_Table_Men.Get_Qx(j))))
     return result
-
 
 """
 Get start date of work
@@ -179,7 +180,7 @@ def Get_Discounting(Year,Data_list):
             return float(Data_list[i][1])
 
 def Get_Salary_Growth_Rate():
-    return 0.04
+    return 0.03
 
 def Get_All_Data_XL(file_name):
     excel_file = file_name

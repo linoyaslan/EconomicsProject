@@ -85,17 +85,12 @@ def Present_Value():
     print("The amount you borrow is: ")
     return PV
 
-#for i in range(1,Calc_Function_Men.Get_Senioruty_By_Years('22/01/2000','25/01/2020')):
-
-
-
-
 def Main_Func(File_name):
     New_file_name = Mortality_Table_Men.To_CSV(File_name)
     New_file_name2 = Mortality_Table_Men.To_CSV(File_name)
     new_list1 = Calc_Function_Men.Create_Data_List(New_file_name)
     new_list2 = Calc_Function_Men.Create_Data_List2(New_file_name2)
-    k=0
+    k=1
     for item in new_list1[0:]:
             First_Name = item[0]
             Last_Name  =item[1]
@@ -107,60 +102,113 @@ def Main_Func(File_name):
             Percent_Section_14 = item[7]
             if Percent_Section_14 != '':
                 Percent_Section_14 = float(item[7])/100
-            Property_Value = item[8]
+            Property_Value = float(item[8])
             Deposits = item[9]
             Departure_Date = item[10]
             Paid_From_Property = item[11]
             Completion_Payment_Chuck = item[12]
             Leaving_Reason = item[13]
             Senioruty=float(Calc_Function_Men.Get_Senioruty_By_Years(Calc_Function_Men.Get_Start_Date(First_Name, Last_Name, new_list1)))
-            #print((First_Name,Last_Name,Gender,Birth_Date,Start_Work,Salary,Start_Date_Section_14,Percent_Section_14))
             if Gender=='M':
                 Age=67
             else:
                 Age=64
+
             Age_2=Calc_Function_Men.Get_Age_By_Days(Birth_Date)//365
-
-            sum1=0
+            if Age_2 >= 67 and Gender=='M':
+                Sum = Salary * Senioruty
+                print(First_Name + ' ' + Last_Name + ' ' + str(Sum))
+                continue
+            if Age_2 >= 64 and Gender=='F':
+                Sum = Salary * Senioruty
+                print(First_Name + ' ' + Last_Name + ' ' + str(Sum))
+                continue
+            print("Age is: " + str(Age_2))
+            sum1 = 0
+            sum2 = 0
+            sum3 = 0
             Sum=0
-            Years_without_section_14=0
             S_G_Rate=Calc_Function_Men.Get_Salary_Growth_Rate()
-
             if Start_Date_Section_14 != '':
-                No_SDS14=Calc_Function_Men.Get_Section_14_By_Years\
-                    (Start_Work, Start_Date_Section_14)
+                No_SDS14=Calc_Function_Men.Get_Section_14_By_Years(Start_Work, Start_Date_Section_14)
             else:
                 No_SDS14=-1
-
             if No_SDS14 == -1:
-                sum1 += (Salary * Senioruty * ((1 + S_G_Rate) ** (0 + 0.5)) * \
-                       (Mortality_Table_Men.Get_tPx(Age,0)) * \
-                       (Mortality_Table_Men.Get_tQx(Age,0)))/pow(
-                    1 + Calc_Function_Men.Get_Discounting(1, new_list2), (0 + 0.5))
+                for i in range(0, Age - (Age_2+2)):
+                    Px = Calc_Function_Men.Get_Chance_To_Leave(Age_2,i)
+                    temp = Calc_Function_Men.Get_Discounting(i+1, new_list2)
+                    temp2 = Mortality_Table_Men.Resigns_dict[Age_2+i]
+                    temp3 = Mortality_Table_Men.Fired_dict[Age_2 + i+1]
+                    if Gender == 'M':
+                        temp4 = Mortality_Table_Men.Get_tQx(Age_2, i+1)
+                    else:
+                        temp4 = Mortality_Table_Women.Get_tQx(Age_2, i+1)
+                    sum1 += float(Salary * Senioruty) * (pow((1 + S_G_Rate), (i + 0.5)) * Px * temp3 / pow(1 + temp, (i + 0.5)))
+                    sum2 += float(Salary * Senioruty) * (pow((1 + S_G_Rate), (i + 0.5)) * Px * temp4 / pow(1 + temp, (i + 0.5)))
+                    sum3 += Property_Value*Px*temp2
 
-                for i in range(1, Age - Age_2):
-                    sum1 += float(Salary * Senioruty) * (pow((1 + S_G_Rate), (i + 0.5)) * \
-                                                             (Mortality_Table_Men.Get_tPx(Age, i)) * \
-                                                             (Mortality_Table_Men.Get_tQx(Age, i)) / pow(
-                                    1 + Calc_Function_Men.Get_Discounting(i, new_list2), (i + 0.5)))
+                last_year1 =float(Salary * Senioruty) * (pow((1 + S_G_Rate), (Age-Age_2)) * Calc_Function_Men.Get_Chance_To_Leave(Age,1)
+                                                        * Mortality_Table_Men.Fired_dict[Age-1] /
+                                                        pow(1 + Calc_Function_Men.Get_Discounting(Age-Age_2,new_list2), (Age-1-Age_2+ 0.5)))
+
+                last_year2=float(Salary * Senioruty) * (pow((1 + S_G_Rate), (Age-1-Age_2+0.5)) * Calc_Function_Men.Get_Chance_To_Leave(Age,1)
+                           *(1-Mortality_Table_Men.Get_tQx(Age, 1)-Mortality_Table_Men.Resigns_dict[Age-1]-Mortality_Table_Men.Fired_dict[Age-1]) /
+                                                        pow(1 + Calc_Function_Men.Get_Discounting(Age-Age_2,new_list2), (Age-Age_2)))
+
+                last_year3=Property_Value*(Calc_Function_Men.Get_Chance_To_Leave(Age-Age_2-1,1)) * Mortality_Table_Men.Resigns_dict[Age-1]
 
             else:
                 for i in range(No_SDS14):
-                    t=1
-                    sum1 += float(Salary * Senioruty) * (pow((1 + S_G_Rate), (i + 0.5)) * \
-                                                         (Mortality_Table_Men.Get_tPx(Age, t)) * \
-                                                        (Mortality_Table_Men.Get_tQx(Age, t)) /
-                                                pow(1 + Calc_Function_Men.Get_Discounting(t, new_list2), (i + 0.5)))
-                    t+=1
-                for i in range(1, Age - Age_2-No_SDS14+1):
-                    sum1 += float(Salary * Senioruty)*(1-Percent_Section_14) * (pow((1 + S_G_Rate), (i + 0.5)) * \
-                                                                 (Mortality_Table_Men.Get_tPx(Age, i)) * \
-                                                                 (Mortality_Table_Men.Get_tQx(Age, i)) / pow(
-                                        1 + Calc_Function_Men.Get_Discounting(i, new_list2), (i + 0.5)))
-            Sum += sum1
+                    Px = Calc_Function_Men.Get_Chance_To_Leave(Age_2, i)
+                    temp = Calc_Function_Men.Get_Discounting(i+1 , new_list2)
+                    temp2 = Mortality_Table_Men.Resigns_dict[Age_2 + i]
+                    temp3 = Mortality_Table_Men.Fired_dict[Age_2 + i]
+                    if Gender == 'M':
+                        temp4 = Mortality_Table_Men.Get_tQx(Age_2, i+1)
+                    else:
+                        temp4 = Mortality_Table_Women.Get_tQx(Age_2, i+1)
+                    sum1 += float(Salary * Senioruty) * (pow((1 + S_G_Rate), (i + 0.5)) * Px * temp3 / pow(1 + temp, (i + 0.5)))
+                    sum2 += float(Salary * Senioruty) * (pow((1 + S_G_Rate), (i + 0.5)) * Px * temp4 / pow(1 + temp, (i + 0.5)))
+                    sum3 += Property_Value * Px * temp2
+                for i in range(No_SDS14, Age - (Age_2+2)):
+                    Px = Calc_Function_Men.Get_Chance_To_Leave(Age_2, i+1)
+                    temp = Calc_Function_Men.Get_Discounting(i+1, new_list2)
+                    temp2 = Mortality_Table_Men.Resigns_dict[Age_2 + i+1]
+                    temp3 = Mortality_Table_Men.Fired_dict[Age_2 + i+1]
+                    if Gender == 'M':
+                        temp4 = Mortality_Table_Men.Get_tQx(Age_2, i+1)
+                    else:
+                        temp4 = Mortality_Table_Women.Get_tQx(Age_2, i+1)
+                    sum1 += float(Salary*Senioruty)*(1-Percent_Section_14)*pow((1+S_G_Rate),(i+0.5))*Px*temp3/pow(1+temp,(i+0.5))
+                    sum2 += float(Salary*Senioruty)*(1-Percent_Section_14)*pow((1+S_G_Rate),(i+0.5))*Px*temp4/pow(1+temp,(i+0.5))
+                    sum3 += Property_Value * Px * temp2
+
+                last_year1 = float(Salary * Senioruty)*(1-Percent_Section_14) * (
+                            pow((1 + S_G_Rate), (Age - Age_2)) * Calc_Function_Men.Get_Chance_To_Leave(Age,1)
+                            * Mortality_Table_Men.Fired_dict[Age - 1] /
+                            pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - 1 - Age_2 + 0.5)))
+
+                last_year2 = float(Salary * Senioruty) *(1-Percent_Section_14)* (
+                            pow((1 + S_G_Rate), (Age - 1 - Age_2 + 0.5)) * Calc_Function_Men.Get_Chance_To_Leave(Age,1)
+                            * (1 - Mortality_Table_Men.Get_tQx(Age, 1) - Mortality_Table_Men.Resigns_dict[Age - 1] -
+                               Mortality_Table_Men.Fired_dict[Age - 1]) /
+                            pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - Age_2)))
+
+                last_year3 = Property_Value * (Calc_Function_Men.Get_Chance_To_Leave(Age - Age_2 - 1,1)) * \
+                             Mortality_Table_Men.Resigns_dict[Age - 1]
+
+            Sum += sum1+sum2+sum3+last_year1+last_year2+last_year3
+            if Age_2>=67:
+                Sum= Salary*Senioruty
             if Leaving_Reason!='':
                 Sum=0
+            print(k,end='. ')
+            k=k+1
             print(First_Name+' '+ Last_Name+ ' '+str(Sum))
+
+
+
+
     #     # if Senioruty <= 3:
     #     #     Sum=sum1+sum2
     #     #     Sum=Sum-Property_Value

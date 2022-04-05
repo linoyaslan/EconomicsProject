@@ -39,7 +39,7 @@ for i in range(18,110):
         Fired_dict[i] = 0.07
     elif i<40:
         Fired_dict[i] = 0.05
-    elif i<40:
+    elif i<50:
         Fired_dict[i] = 0.04
     elif i<60:
         Fired_dict[i] = 0.03
@@ -117,7 +117,7 @@ the probability of dying in the next year
 Get_Qx Get 1 parm Age = current  Age
 """
 def Get_Qx(Age):
-    qx= new_list[1][Age-17]
+    qx= new_list[4][Age-17]
     return qx
 
 """
@@ -126,7 +126,7 @@ px: px represents the probability that a person aged exactly x survives one year
 Get_Px Get 1 parm Age = current  Age
 """
 def Get_Px(Age):
-    px= new_list[1][Age-17]
+    px= new_list[3][Age-17]
     return px
 
 """
@@ -147,7 +147,6 @@ Get_tQx Get 1 parm Age = current  Age
 def Get_tQx(Age,i):
     tQx = 1 - Get_tPx(Age,i)
     return tQx
-
 """
 s+tPx : represents the probability that a person aged exactly x lives for another t years, and than another s years
 to exact age (x+t+s)
