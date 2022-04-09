@@ -1,5 +1,6 @@
 import csv
 import Mortality_Table_Men
+import Mortality_Table_Women
 import pandas as pd
 import datetime
 from datetime import datetime
@@ -117,18 +118,23 @@ def Get_Age_By_Days(Age):
     return (date2-b_date).days
 
 """
-The probability that a person at age X will leave his job after t years.
-Get_Chance_To_Leave Get 1 parm Age = current  Age
+The probability that a person at age X will stay in his job after t years.
+Get_Chance_To_Stay Get 3 parm : Age = current  Age, i = stay t years , Gender = Gender
 """
-def Get_Chance_To_Leave(Age,i):
-    #print("Enter y (The number of years a person is expected to leave his workplace:)")
-    result = 1.0
-    if i == 0:
+def Get_Chance_To_Stay(Age, i, Gender):
+    if i==0:
         return 1
-    for j in range(Age+1,(Age+i)):
-        result = result*(1-(Mortality_Table_Men.Fired_dict[j] + Mortality_Table_Men.Resigns_dict[j]
-                            + float(Mortality_Table_Men.Get_Qx(j))))
-    return result
+    if i == 1:
+        return 1
+    if Gender=='M':
+        result = (1-(Mortality_Table_Men.Fired_dict[(Age+i-1)] + Mortality_Table_Men.Resigns_dict[(Age+i-1)]
+                                + float(Mortality_Table_Men.Get_Qx(Age+i-1))))
+        return result*Get_Chance_To_Stay(Age,i-1,Gender)
+
+    else:
+        result = (1 - (Mortality_Table_Women.Fired_dict[Age+i-1] + Mortality_Table_Women.Resigns_dict[Age+i-1]
+                                    + float(Mortality_Table_Women.Get_Qx(Age+i-1))))
+        return result*Get_Chance_To_Stay(Age,i-1,Gender)
 
 """
 Get start date of work

@@ -101,7 +101,7 @@ Get_Lx Get 1 parm Age = current  Age
 """
 def Get_Lx(Age):
     lx= new_list[1][Age-17]
-    return lx
+    return float(lx)
 
 """
 dx: represents the number of persons who die aged x last birthday. dx=lx-lx+1
@@ -109,7 +109,7 @@ Get_Dx Get 1 parm Age = current  Age
 """
 def Get_Dx(Age):
     dx = new_list[2][Age - 17]
-    return dx
+    return float(dx)
 
 """
 qx: represents the probability that a person aged exactly x dies before exact age (x+1). qx= dx/lx
@@ -118,7 +118,7 @@ Get_Qx Get 1 parm Age = current  Age
 """
 def Get_Qx(Age):
     qx= new_list[4][Age-17]
-    return qx
+    return float(qx)
 
 """
 px: px represents the probability that a person aged exactly x survives one year to exactly age (x+1).
@@ -127,7 +127,7 @@ Get_Px Get 1 parm Age = current  Age
 """
 def Get_Px(Age):
     px= new_list[3][Age-17]
-    return px
+    return float(px)
 
 """
 tPx: represents the probability that a person aged exactly x lives for another t years to exact age (x+t).
@@ -163,7 +163,7 @@ def Get_stPx(Age):
     s_P_tx = Get_Lx((Age4 + Age3)) / Get_Lx(Age4)
 
     stPx = tPx * s_P_tx
-    return stPx
+    return float(stPx)
 
 """
 (n+1)qx : The probability that a person at age x will live n years and die next year.
@@ -174,5 +174,5 @@ def Get_n1Qx(Age):
     Age2 = int(input())
     nPx =  Get_Lx((Age + Age2)) / Get_Lx(Age)
     n1_Q_x = nPx * Get_Qx(Age+Age2+1)
-    return n1_Q_x
+    return float(n1_Q_x)
 
