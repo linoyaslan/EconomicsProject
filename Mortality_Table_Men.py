@@ -176,3 +176,4 @@ def Get_n1Qx(Age):
     n1_Q_x = nPx * Get_Qx(Age+Age2+1)
     return float(n1_Q_x)
 
+

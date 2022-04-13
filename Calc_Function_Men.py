@@ -136,13 +136,15 @@ def Get_Chance_To_Stay(Age, i, Gender):
                                     + float(Mortality_Table_Women.Get_Qx(Age+i-1))))
         return result*Get_Chance_To_Stay(Age,i-1,Gender)
 
+
+
 """
 Get start date of work
 """
 def Get_Start_Date(Name,last_name,Data_list):
     for i in range(len(Data_list)):
         if Data_list[i][0] == Name and Data_list[i][1] == last_name:
-            return parse(Data_list[i][4])
+            return Data_list[i][4]
 
 def Get_leaving_Date(Name,last_name,Data_list):
     for i in range(len(Data_list)):
@@ -155,11 +157,12 @@ def Get_leaving_Date(Name,last_name,Data_list):
 Calculates the seniority of an employee by days
 """
 def Get_Senioruty_By_Years(start):
-    a_date = start
+    a_date = parse(start)
     a_date = datetime(a_date.year, a_date.month, a_date.day)
-    b_date = parse('28/04/2022')
+    b_date = parse('31/12/2021')
     b_date = datetime(b_date.year, b_date.month, b_date.day)
-    return ((b_date-a_date)/365.25).days
+    return float((b_date-a_date).days/365.25)
+
 """
 Returns the years in which an employee worked without section 14
 """

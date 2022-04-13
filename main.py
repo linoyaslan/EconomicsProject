@@ -1,3 +1,5 @@
+import csv
+
 import Mortality_Table_Women
 import Mortality_Table_Men
 import Calc_Function_Men
@@ -95,6 +97,7 @@ def Main_Func(File_name):
     new_list1 = Calc_Function_Men.Create_Data_List(New_file_name)
     new_list2 = Calc_Function_Men.Create_Data_List2(New_file_name2)
     k=1
+    new_list3 = [["", 'First Name', 'Last Name', 'Retirement Compensation']]
     for item in new_list1[0:]:
             First_Name = item[0]
             Last_Name  =item[1]
@@ -124,10 +127,14 @@ def Main_Func(File_name):
             if Age_2 >= 67 and Gender=='M':
                 Sum = Salary * Senioruty
                 print(First_Name + ' ' + Last_Name + ' ' + str(Sum))
+                new_list3.append([k, item[0], item[1], Sum,'More Then 67'])
+                k = k + 1
                 continue
             if Age_2 >= 64 and Gender=='F':
                 Sum = Salary * Senioruty
                 print(First_Name + ' ' + Last_Name + ' ' + str(Sum))
+                new_list3.append([k, item[0], item[1], Sum,'More Then 64'])
+                k = k + 1
                 continue
             sum1 = 0
             sum2 = 0
@@ -138,12 +145,13 @@ def Main_Func(File_name):
                 No_SDS14=Calc_Function_Men.Get_Section_14_By_Years(Start_Work, Start_Date_Section_14)
             else:
                 No_SDS14=-1
+
             if No_SDS14 == -1:
                 for i in range(0, Age - (Age_2+2)):
                     Px = Calc_Function_Men.Get_Chance_To_Stay(Age_2, i+1, Gender)
                     temp = Calc_Function_Men.Get_Discounting(i+1, new_list2)
-                    temp2 = Mortality_Table_Men.Resigns_dict[Age_2+i]
-                    temp3 = Mortality_Table_Men.Fired_dict[Age_2 + i]
+                    temp2 = Mortality_Table_Men.Resigns_dict[Age_2+i+1]
+                    temp3 = Mortality_Table_Men.Fired_dict[Age_2 + i+1]
                     if Gender == 'M':
                         temp4 = Mortality_Table_Men.Get_tQx(Age_2,i+1)
                     else:
@@ -156,42 +164,49 @@ def Main_Func(File_name):
                     temp4 = Mortality_Table_Men.Get_tQx(Age_2, Age - Age_2)
                 else:
                     temp4 = Mortality_Table_Women.Get_tQx(Age_2, Age - Age_2)
-                last_year1 = (float(Salary * Senioruty) * (1 - Percent_Section_14) * (pow((1 + S_G_Rate), (Age - 1 - Age_2 + 0.5)) *
-                             Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender) * temp4)
-                        / pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - 1 - Age_2 + 0.5)))
-
-                last_year2 = (float(Salary * Senioruty) * (1 - Percent_Section_14) * (
-                        pow((1 + S_G_Rate), (Age - Age_2)) * Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)
-                        * (1 - temp4 - Mortality_Table_Men.Resigns_dict[Age - 1] -Mortality_Table_Men.Fired_dict[Age - 1]))) / \
-                             pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - Age_2))
-
-                last_year3 = Property_Value * (Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)) * \
+                #Q3
+                last_year1  = (float(Salary * Senioruty) *
+                              (1-Percent_Section_14) *
+                              (pow((1 + S_G_Rate), (Age - 1 - Age_2 + 0.5)) *
+                              Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)* temp4)/
+                              pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - 1 - Age_2 + 0.5)))
+                #last year
+                last_year2  = float(Salary * Senioruty) *\
+                              (1-Percent_Section_14) *\
+                              (pow((1 + S_G_Rate), (Age - Age_2)) *
+                              Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2-1, Gender) *
+                              (1-temp4 - Mortality_Table_Men.Resigns_dict[Age - 1] -Mortality_Table_Men.Fired_dict[Age - 1]))\
+                              /pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - Age_2))
+                #Q2
+                last_year3 = Property_Value * \
+                             (Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)) *\
                              Mortality_Table_Men.Resigns_dict[Age - 1]
-                last_year4 =(float(Salary * Senioruty) * (1 - Percent_Section_14) * (
-                        pow((1 + S_G_Rate), (Age - Age_2 + 0.5)) * Calc_Function_Men.Get_Chance_To_Stay(Age_2,Age - Age_2 - 1,Gender)
-                        * Mortality_Table_Men.Fired_dict[Age - 1])/ pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2),(Age - Age_2 + 0.5)))
-
+                #Q1
+                last_year4 = float(Salary * Senioruty) *\
+                             (1-Percent_Section_14) *\
+                             (pow((1 + S_G_Rate), (Age - Age_2 + 0.5)) *
+                             Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender) *
+                             Mortality_Table_Men.Fired_dict[Age - 1])\
+                             /pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - Age_2 + 0.5))
             else:
                 for i in range(No_SDS14):
-                    Px = Calc_Function_Men.Get_Chance_To_Stay(Age_2, i+1, Gender)
+                    Px = Calc_Function_Men.Get_Chance_To_Stay(Age_2, i, Gender)
                     temp = Calc_Function_Men.Get_Discounting(i+1 , new_list2)
-                    temp2 = Mortality_Table_Men.Resigns_dict[Age_2 + i]
-                    temp3 = Mortality_Table_Men.Fired_dict[Age_2 + i]
+                    temp2 = Mortality_Table_Men.Resigns_dict[Age_2 + i+1]
+                    temp3 = Mortality_Table_Men.Fired_dict[Age_2 + i+1]
                     if Gender == 'M':
                         temp4 = Mortality_Table_Men.Get_tQx(Age_2,i+1)
                     else:
                         temp4 = Mortality_Table_Women.Get_tQx(Age_2,i+1)
-                    sum1 += (float(Salary * Senioruty) * (pow((1 + S_G_Rate), (i + 0.5)) * Px * temp3) / pow(1 + temp, (i + 0.5)))
-                    sum2 += (float(Salary * Senioruty) * (pow((1 + S_G_Rate), (i + 0.5)) * Px * temp4) / pow(1 + temp, (i + 0.5)))
+                    sum1 += float(Salary * Senioruty) * (pow((1 + S_G_Rate), (i + 0.5)) * Px * temp3) / pow(1 + temp, (i + 0.5))
+                    sum2 += float(Salary * Senioruty) * (pow((1 + S_G_Rate), (i + 0.5)) * Px * temp4) / pow(1 + temp, (i + 0.5))
                     sum3 += Property_Value * Px * temp2
+
                 for i in range(No_SDS14, Age - (Age_2+2)):
-                    if i==0:
-                        Px = Calc_Function_Men.Get_Chance_To_Stay(Age_2, i+1, Gender)
-                    else:
-                        Px = Calc_Function_Men.Get_Chance_To_Stay(Age_2, i, Gender)
+                    Px = Calc_Function_Men.Get_Chance_To_Stay(Age_2, i+1, Gender)
                     temp = Calc_Function_Men.Get_Discounting(i+1, new_list2)
-                    temp2 = Mortality_Table_Men.Resigns_dict[Age_2 + i+1 ]
-                    temp3 = Mortality_Table_Men.Fired_dict[Age_2 + i+1 ]
+                    temp2 = Mortality_Table_Men.Resigns_dict[Age_2 + i+1]
+                    temp3 = Mortality_Table_Men.Fired_dict[Age_2 + i+1]
                     if Gender == 'M':
                         temp4 = Mortality_Table_Men.Get_tQx(Age_2,i+1)
                     else:
@@ -199,36 +214,73 @@ def Main_Func(File_name):
                     sum1 += (float(Salary*Senioruty)*(1-Percent_Section_14)*pow((1+S_G_Rate),(i+0.5))*Px*temp3)/pow(1+temp,(i+0.5))
                     sum2 += (float(Salary*Senioruty)*(1-Percent_Section_14)*pow((1+S_G_Rate),(i+0.5))*Px*temp4)/pow(1+temp,(i+0.5))
                     sum3 += Property_Value * Px * temp2
+
+
                 if Gender == 'M':
                     temp4 = Mortality_Table_Men.Get_tQx(Age_2, Age-Age_2)
                 else:
                     temp4 = Mortality_Table_Women.Get_tQx(Age_2 , Age-Age_2)
-                last_year1 = (float(Salary * Senioruty)*(1-Percent_Section_14) * (
-                            pow((1 + S_G_Rate), (Age - 1 - Age_2 + 0.5)) * Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)
-                            * temp4)
-                            /pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - 1 - Age_2 + 0.5)))
+                #Q3
 
-                last_year2 = (float(Salary * Senioruty) *(1-Percent_Section_14)* (
-                            pow((1 + S_G_Rate), (Age - Age_2)) * Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)
-                            * (1-temp4 - Mortality_Table_Men.Resigns_dict[Age - 1] -
-                               Mortality_Table_Men.Fired_dict[Age - 1])))/\
-                             pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - Age_2))
-
-                last_year3 = Property_Value * (Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)) * \
+                last_year1  = (float(Salary * Senioruty) *
+                              (1-Percent_Section_14) *
+                              (pow((1 + S_G_Rate), (Age - 1 - Age_2 + 0.5)) *
+                              Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)* temp4)/
+                              pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - 1 - Age_2 + 0.5)))
+                #last year
+                last_year2  = float(Salary * Senioruty) *\
+                              (1-Percent_Section_14) *\
+                              (pow((1 + S_G_Rate), (Age - Age_2)) *
+                              Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2-1, Gender) *
+                              (1-temp4 - Mortality_Table_Men.Resigns_dict[Age - 1] -Mortality_Table_Men.Fired_dict[Age - 1]))\
+                              /pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - Age_2))
+                #Q2
+                last_year3 = Property_Value * \
+                             (Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)) *\
                              Mortality_Table_Men.Resigns_dict[Age - 1]
-                last_year4= (float(Salary * Senioruty)*(1-Percent_Section_14) * (
-                            pow((1 + S_G_Rate), (Age - Age_2 + 0.5)) * Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)
-                            * Mortality_Table_Men.Fired_dict[Age - 1])
-                            /pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - Age_2 + 0.5)))
+                #Q1
+                last_year4 = float(Salary * Senioruty) *\
+                             (1-Percent_Section_14) *\
+                             (pow((1 + S_G_Rate), (Age - Age_2 + 0.5)) *
+                             Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender) *
+                             Mortality_Table_Men.Fired_dict[Age - 1])\
+                             /pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - Age_2 + 0.5))
 
-            Sum += sum1+sum2+sum3+last_year1+last_year2+last_year3+last_year4
+            Sum = sum1+sum2+sum3+last_year1+last_year2+last_year3+last_year4
             if Leaving_Reason!='':
                 Sum=0
+            new_list3.append([k,item[0], item[1], Sum])
             print(k,end='. ')
             k=k+1
             print(First_Name+' '+ Last_Name+ ' '+str(Sum))
             print("Age is: " + str(Age_2))
+    with open("C:\\Users\\or204\\PycharmProjects\\EconomicsProject\\myfile.csv", 'a', newline='') as myfile:
+        for i in new_list3:
+            writer = csv.writer(myfile)
+            writer.writerow(i)
+
 
 
 
 Main_Func("test")
+
+
+
+
+
+
+
+# last_year1 = (float(Salary * Senioruty) * (1 - Percent_Section_14) * (pow((1 + S_G_Rate), (Age - 1 - Age_2 + 0.5)) *
+#              Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender) * temp4)
+#         / pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - 1 - Age_2 + 0.5)))
+#
+# last_year2 = (float(Salary * Senioruty) * (1 - Percent_Section_14) * (
+#         pow((1 + S_G_Rate), (Age - Age_2)) * Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)
+#         * (1 - temp4 - Mortality_Table_Men.Resigns_dict[Age - 1] -Mortality_Table_Men.Fired_dict[Age - 1]))) / \
+#              pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2), (Age - Age_2))
+#
+# last_year3 = Property_Value * (Calc_Function_Men.Get_Chance_To_Stay(Age_2, Age - Age_2 - 1, Gender)) * \
+#              Mortality_Table_Men.Resigns_dict[Age - 1]
+# last_year4 =(float(Salary * Senioruty) * (1 - Percent_Section_14) * (
+#         pow((1 + S_G_Rate), (Age - Age_2 + 0.5)) * Calc_Function_Men.Get_Chance_To_Stay(Age_2,Age - Age_2 - 1,Gender)
+#         * Mortality_Table_Men.Fired_dict[Age - 1])/ pow(1 + Calc_Function_Men.Get_Discounting(Age - Age_2, new_list2),(Age - Age_2 + 0.5)))
