@@ -136,6 +136,10 @@ def Get_Chance_To_Stay(Age, i, Gender):
                                     + float(Mortality_Table_Women.Get_Qx(Age+i-1))))
         return result*Get_Chance_To_Stay(Age,i-1,Gender)
 
+#print(Get_Chance_To_Stay(36,1,'F'))
+#print(Get_Chance_To_Stay(36,26,'F'))
+#print(Get_Chance_To_Stay(36,3,'F'))
+#print(Get_Chance_To_Stay(36,4,'F'))
 
 
 """
@@ -189,7 +193,7 @@ def Get_Discounting(Year,Data_list):
             return float(Data_list[i][1])
 
 def Get_Salary_Growth_Rate():
-    return 0.03
+    return 0.04
 
 def Get_All_Data_XL(file_name):
     excel_file = file_name
