@@ -117,29 +117,26 @@ def Get_Age_By_Days(Age):
     date2 = datetime(temp2.year, temp2.month, temp2.day)
     return (date2-b_date).days
 
-"""
-The probability that a person at age X will stay in his job after t years.
-Get_Chance_To_Stay Get 3 parm : Age = current  Age, i = stay t years , Gender = Gender
-"""
-def Get_Chance_To_Stay(Age, i, Gender):
-    if i==0:
-        return 1
-    if i == 1:
-        return 1
-    if Gender=='M':
-        result = (1-(Mortality_Table_Men.Fired_dict[(Age+i-1)] + Mortality_Table_Men.Resigns_dict[(Age+i-1)]
-                                + float(Mortality_Table_Men.Get_Qx(Age+i-1))))
-        return result*Get_Chance_To_Stay(Age,i-1,Gender)
+# """
+# The probability that a person at age X will stay in his job after t years.
+# Get_Chance_To_Stay Get 3 parm : Age = current  Age, i = stay t years , Gender = Gender
+# """
+def Get_Chance_To_Stay(Age,i,Gender):
+    Age2 = i
+    result = 1.0
+    for i in range(Age+1,(Age+Age2)):
+        if Gender == 'M':
+            result = result*(1-(Mortality_Table_Men.Fired_dict[i] + Mortality_Table_Men.Resigns_dict[i]
+                            + Mortality_Table_Men.Get_Qx(i)))
+        else:
+            result = result * (1 - (Mortality_Table_Men.Fired_dict[i] + Mortality_Table_Men.Resigns_dict[i]
+                                    + Mortality_Table_Women.Get_Qx(i)))
+    return result
 
-    else:
-        result = (1 - (Mortality_Table_Women.Fired_dict[Age+i-1] + Mortality_Table_Women.Resigns_dict[Age+i-1]
-                                    + float(Mortality_Table_Women.Get_Qx(Age+i-1))))
-        return result*Get_Chance_To_Stay(Age,i-1,Gender)
-
-#print(Get_Chance_To_Stay(36,1,'F'))
-#print(Get_Chance_To_Stay(36,26,'F'))
-#print(Get_Chance_To_Stay(36,3,'F'))
-#print(Get_Chance_To_Stay(36,4,'F'))
+#print(Get_Chance_To_Stay(28,5,'M'))
+# print(Get_Chance_To_Stay(36,26,'F'))
+# print(Get_Chance_To_Stay(36,3,'F'))
+# print(Get_Chance_To_Stay(36,4,'F'))
 
 
 """
@@ -163,7 +160,7 @@ Calculates the seniority of an employee by days
 def Get_Senioruty_By_Years(start):
     a_date = parse(start)
     a_date = datetime(a_date.year, a_date.month, a_date.day)
-    b_date = parse('31/12/2021')
+    b_date = parse('31/12/2020')
     b_date = datetime(b_date.year, b_date.month, b_date.day)
     return float((b_date-a_date).days/365.25)
 
@@ -177,8 +174,7 @@ def Get_Section_14_By_Years(start,end):
     if type(end) != type(start):
         return "There is no section 14"
     b_date = datetime(b_date.year, b_date.month, b_date.day)
-    return ((b_date-a_date)/365.25).days
-
+    return float(((b_date-a_date).days/365.25))
 """
 Returns the salary of each employee based on input: first, last name, Data_list
 """
