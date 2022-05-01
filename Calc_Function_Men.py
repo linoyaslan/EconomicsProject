@@ -155,7 +155,7 @@ def Get_leaving_Date(Name,last_name,Data_list):
             return parse(Data_list[i][10])
 
 """
-Calculates the seniority of an employee by days
+Calculates the seniority of an employee by Years
 """
 def Get_Senioruty_By_Years(start):
     a_date = parse(start)
